@@ -14,19 +14,28 @@ import java.util.Random;
 public class Country {
 	String countryName;
 	String countryCode;
+	ArrayList<String> cities;
 	HashMap<String, ArrayList<String>> countryCities;
 	/**
 	 * @param args
+	 * @throws IOException 
 	 */
-	public Country(){
+	public Country() throws IOException{
+		countryName = getCountryNameAndSetCode();
+		getCities(countryCode);
+		cities = countryCities.get(countryCode);
+		checkNull();
+	}
+	public String getCountryNameAndSetCode(){
 		Random rand = new Random();
 		Integer randomNum = Math.abs(rand.nextInt());
 		Locale[] allCountries = Locale.getAvailableLocales();
 		randomNum = randomNum % allCountries.length;
 		String randomCountry = allCountries[randomNum].getDisplayCountry();
 		countryCode = allCountries[randomNum].getCountry();
-		countryName = randomCountry;
+		return randomCountry;	
 	}
+	
 	public HashMap<String, ArrayList<String>> getCities(String code) throws IOException{
 		countryCities = new HashMap<String, ArrayList<String>>();
 		BufferedReader reader = new BufferedReader(new FileReader("src/cities15000.txt"));
@@ -59,6 +68,14 @@ public class Country {
 		}
 		return countryCities;
 	}
+	public void checkNull() throws IOException{
+		
+		while(cities == null){
+			countryName = getCountryNameAndSetCode();
+			getCities(countryCode);
+			cities = countryCities.get(countryCode);		
+		}
+	}
 	 
 		
 		
@@ -68,7 +85,7 @@ public class Country {
 		Country tester = new Country();
 		tester.getCities(tester.countryCode);
 		System.out.println(tester.countryName + "\n" + tester.countryCode);
-		System.out.print(tester.countryCities.get(tester.countryCode));
+		System.out.println(tester.cities);
 		
 
 	}
